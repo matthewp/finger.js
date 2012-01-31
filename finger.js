@@ -1,5 +1,16 @@
 var net = require('net'),
+    os = require('os')
     server = net.createServer(connect);
+
+var slash;    
+var homePath = (function() {
+  var isWin = process.platform === 'win32',
+      home = process.env[isWin ? 'USERPROFILE' : 'HOME'];
+
+  slash = isWin ? '\\' : '/';
+
+  return home.substring(0, home.lastIndexOf(slash));
+})();
 
 function User(name) {
   this.name = name;
@@ -9,22 +20,15 @@ User.prototype = {
   name: '',
 
   get home () {
-    if(!this.name) {
-      return '';
-    }
-
-    return '/home/' + this.name;
+    return homePath + slash + this.name;
   },
 
   get planfile () {
-    if(!this.name) {
-      return '';
-    }
-
-    return this.home + '/.plan';
+    return this.home + slash + '.plan';
   },
 
-  get plan () {
+  getPlan: function(cb) {
+    // TODO retrieve the .plan
 
   }
 };
@@ -40,16 +44,31 @@ Request.prototype = {
   user: ''
 };
 
-function connect(stream) {
+function Response(request) {
+  this.req = request;
+}
+
+Response.prototype = {
+  reply: function(cb) {
+    var self = this;
+    // TODO retrieve the user's .plan
+  }
+};
+
+function connect (stream) {
   stream.setEncoding('utf8');
   stream.on('connect', function() {
-    console.log('Connection created.');
+    
   });
 
   stream.on('data', function(data) {
-    var req = new Request(data);
-
-    console.log(req.user.planfile);
+    var req = new Request(data),
+        resp = new Response(req);
+    
+    resp.reply(function(msg) {
+      stream.write(msg);
+      stream.close();
+    });
   });
 }
 
