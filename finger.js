@@ -1,4 +1,5 @@
-var net = require('net'),
+var fs = require('fs'),
+    net = require('net'),
     os = require('os')
     server = net.createServer(connect);
 
@@ -28,8 +29,7 @@ User.prototype = {
   },
 
   getPlan: function(cb) {
-    // TODO retrieve the .plan
-
+    fs.readFile(this.planfile, cb);
   }
 };
 
@@ -51,7 +51,34 @@ function Response(request) {
 Response.prototype = {
   reply: function(cb) {
     var self = this;
-    // TODO retrieve the user's .plan
+    var user = self.req.user;
+    user.getPlan(function(err, data) {
+      var msg;
+
+      if(err) {
+        msg = self.parseError(user.planfile, err);
+     } else {
+        msg = data;
+     }
+
+     cb(msg);
+    });
+  },
+
+  parseError: function(plan, err) {
+    var msg;
+
+    switch(err.code) {
+      case 'ENOENT':
+        msg = "User doesn't have a plan.";
+        break;
+      default:
+        console.log('Plan: ' + plan + ', Code: ' + err.code);
+        msg = "Unable to open the user's plan.";
+        break;
+    }
+    
+    return msg;
   }
 };
 
@@ -67,7 +94,7 @@ function connect (stream) {
     
     resp.reply(function(msg) {
       stream.write(msg);
-      stream.close();
+      stream.end();
     });
   });
 }
