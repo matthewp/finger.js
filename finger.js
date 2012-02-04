@@ -28,6 +28,10 @@ User.prototype = {
     return this.home + slash + '.plan';
   },
 
+  get projectfile () {
+    return this.home + slash + '.project';
+  },
+
   getPlan: function(cb) {
     console.log('Planfile located at ' + this.planfile);
     fs.readFile(this.planfile, cb);
