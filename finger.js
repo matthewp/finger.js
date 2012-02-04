@@ -6,7 +6,7 @@ var fs = require('fs'),
 var slash;    
 var homePath = (function() {
   var isWin = process.platform === 'win32',
-      home = process.env[isWin ? 'USERPROFILE' : 'HOME'];
+      home = isWin ? process.env['USERPROFILE'] : '/home/';
 
   slash = isWin ? '\\' : '/';
 
@@ -29,6 +29,7 @@ User.prototype = {
   },
 
   getPlan: function(cb) {
+    console.log('Planfile located at ' + this.planfile);
     fs.readFile(this.planfile, cb);
   }
 };
@@ -70,7 +71,7 @@ Response.prototype = {
 
     switch(err.code) {
       case 'ENOENT':
-        msg = "User doesn't have a plan.";
+        msg = "User doesn't have a plan.\n";
         break;
       default:
         console.log('Plan: ' + plan + ', Code: ' + err.code);
