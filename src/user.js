@@ -18,7 +18,6 @@ User.prototype = {
   },
 
   getPlan: function(cb) {
-    console.log('Planfile located at ' + this.planfile);
     fs.readFile(this.planfile, cb);
   }
 };
