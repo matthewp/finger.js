@@ -11,8 +11,6 @@ var homePath = (function() {
       home = isWin ? process.env['USERPROFILE'] :
         isMac ? '/Users/' : '/home/';
 
-  console.log(home);
-
   slash = isWin ? '\\' : '/';
 
   return home.substring(0, home.lastIndexOf(slash));

@@ -1,8 +1,13 @@
-var assert = require('assert');
+var assert = require('assert'),
+    exec = require('child_process').exec;
+
+function finger(query, callback) {
+  exec('finger ' + query, callback);
+}
 
 (function() {
-
- var query = 'matthew';
- // TODO How are we going to run our tests? 
-
+  var query = 'matthew';
+  finger(query, function(stdout, stderr) {
+    console.log(stdout);
+  });
 })();
