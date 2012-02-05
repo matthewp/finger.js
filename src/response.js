@@ -6,12 +6,10 @@ Response.prototype = {
   reply: function(cb) {
     var self = this;
     var user = self.req.user;
-    user.getPlanAndProject(function(err, data) {
-      var msg;
+    user.getPlanAndProject(function(errs, data) {
+      var msg = '';
 
-      if(err) {
-        msg = self.parseError(user.planfile, err);
-     } else {
+      if(!errs) {
         msg = data;
      }
 

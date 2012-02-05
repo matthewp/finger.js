@@ -44,13 +44,6 @@ User.prototype = {
   },
 
   getPlanAndProject: function(cb, type, err, data) {
-    console.log(typeof type === 'undefined'
-        ? 'Starting'
-        : 'type: ' + type
-          + ', cb: ' + typeof cb
-          + ', err: ' + err
-          + ', data: ' + data);
-
     var self = this, compose;
 
     if(typeof type === 'undefined') {
