@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs'),
     net = require('net'),
-    os = require('os')
+    os = require('os'),
     server = net.createServer(connect);
 
 var slash;    
@@ -21,6 +21,8 @@ function User(name) {
 User.prototype = {
   name: '',
 
+  errors: {},
+
   get home () {
     return homePath + slash + this.name;
   },
@@ -33,9 +35,60 @@ User.prototype = {
     return this.home + slash + '.project';
   },
 
+  get plan () {
+    return this._plan;
+  },
+
+  set plan (p) {
+    this._plan = p;
+  },
+
+  get project () {
+    return this._project;
+  },
+
+  set project (p) {
+    this._project = p;
+  },
+
   getPlan: function(cb) {
-    console.log('Planfile located at ' + this.planfile);
     fs.readFile(this.planfile, cb);
+  },
+
+  getProject: function(cb) {
+    fs.readFile(this.projectfile, cb);
+  },
+
+  getPlanAndProject: function(cb, type, err, data) {
+    console.log(typeof type === 'undefined'
+        ? 'Starting'
+        : 'type: ' + type
+          + ', cb: ' + typeof cb
+          + ', err: ' + err
+          + ', data: ' + data);
+
+    var self = this, compose;
+
+    if(typeof type === 'undefined') {
+      compose = function(t) {
+        return self.getPlanAndProject.bind(self, cb, t);
+      }
+      self.getPlan(compose('plan'));
+      self.getProject(compose('project'));
+
+      return;
+    }
+
+    self[type] = data;
+    if(err)
+      self.errors[type] = err;
+
+    if(self.plan !== null && self.project !== null) {
+      if(Object.keys(self.errors).length > 0)
+        cb(self.errors, self.plan, self.project);
+      else
+        cb(null, self.plan, self.project);
+    }
   }
 };
 
@@ -58,7 +111,7 @@ Response.prototype = {
   reply: function(cb) {
     var self = this;
     var user = self.req.user;
-    user.getPlan(function(err, data) {
+    user.getPlanAndProject(function(err, data) {
       var msg;
 
       if(err) {

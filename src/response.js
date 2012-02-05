@@ -6,7 +6,7 @@ Response.prototype = {
   reply: function(cb) {
     var self = this;
     var user = self.req.user;
-    user.getPlan(function(err, data) {
+    user.getPlanAndProject(function(err, data) {
       var msg;
 
       if(err) {
