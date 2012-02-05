@@ -56,11 +56,11 @@ User.prototype = {
       return;
     }
 
-    self[type] = data;
+    self[type] = data || null;
     if(err)
       self.errors[type] = err;
 
-    if(self.plan !== null && self.project !== null) {
+    if(typeof self.plan !== "undefined" && typeof self.project !== "undefined") {
       if(Object.keys(self.errors).length > 0)
         cb(self.errors, self.plan, self.project);
       else

@@ -11,7 +11,7 @@ Response.prototype = {
 
       if(!errs) {
         msg = data;
-     }
+      }
 
      cb(msg);
     });
