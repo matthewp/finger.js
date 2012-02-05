@@ -7,7 +7,11 @@ var fs = require('fs'),
 var slash;    
 var homePath = (function() {
   var isWin = process.platform === 'win32',
-      home = isWin ? process.env['USERPROFILE'] : '/home/';
+      isMac = process.platform === 'darwin',
+      home = isWin ? process.env['USERPROFILE'] :
+        isMac ? '/Users/' : '/home/';
+
+  console.log(home);
 
   slash = isWin ? '\\' : '/';
 
@@ -109,8 +113,6 @@ Response.prototype = {
 
       if(!errs) {
         msg = data;
-      } else {
-        console.log('Errors: ' + Object.keys(errs).length);
       }
 
      cb(msg);

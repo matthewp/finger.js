@@ -1,7 +1,9 @@
 var slash;    
 var homePath = (function() {
   var isWin = process.platform === 'win32',
-      home = isWin ? process.env['USERPROFILE'] : '/home/';
+      isMac = process.platform === 'darwin',
+      home = isWin ? process.env['USERPROFILE'] :
+        isMac ? '/Users/' : '/home/';
 
   slash = isWin ? '\\' : '/';
 
