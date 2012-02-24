@@ -60,7 +60,7 @@ User.prototype = {
     if(err)
       self.errors[type] = err;
 
-    if(typeof self.plan !== "undefined" && typeof self.project !== "undefined") {
+    if(exists(self.plan) && exists(self.project)) {
       if(Object.keys(self.errors).length > 0)
         cb(self.errors, self.plan, self.project);
       else
