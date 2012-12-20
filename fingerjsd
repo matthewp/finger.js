@@ -92,10 +92,12 @@ function Request(raw) {
   if(data) {
     this.user = new User(data[0]);
   }
+
+  this.user = '';
 }
 
 Request.prototype = {
-  user: ''
+  
 };
 
 function Response(request) {
