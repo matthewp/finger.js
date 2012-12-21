@@ -4,6 +4,7 @@ endef
 
 modules = src/require.js\
           src/homepath.js\
+					src/utils.js\
           src/user.js\
           src/request.js\
           src/response.js\

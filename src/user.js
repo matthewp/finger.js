@@ -42,7 +42,7 @@ User.prototype = {
   getProject: function(cb) {
     fs.readFile(this.projectfile, cb);
   },
-
+  
   getPlanAndProject: function(cb, type, err, data) {
     var self = this, compose;
 
@@ -57,10 +57,13 @@ User.prototype = {
     }
 
     self[type] = data || null;
-    if(err)
+    self[type + '_d'] = true;
+    
+    if(err) {
       self.errors[type] = err;
+    }
 
-    if(exists(self.plan) && exists(self.project)) {
+    if(exists(self['plan_d']) && exists(self['project_d'])) {
       if(Object.keys(self.errors).length > 0)
         cb(self.errors, self.plan, self.project);
       else

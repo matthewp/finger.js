@@ -4,8 +4,8 @@ function Response(request) {
 
 Response.prototype = {
   reply: function(cb) {
-    var self = this;
-    var user = self.req.user;
+    var user = this.req.user;
+
     user.getPlanAndProject(function(errs, data) {
       var msg = '';
 

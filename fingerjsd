@@ -16,6 +16,10 @@ var homePath = (function() {
   return home.substring(0, home.lastIndexOf(slash));
 })();
 
+function exists(obj) {
+  return typeof obj !== 'undefined' && obj !== null;
+}
+
 function User(name) {
   this.name = name;
 }
@@ -60,7 +64,7 @@ User.prototype = {
   getProject: function(cb) {
     fs.readFile(this.projectfile, cb);
   },
-
+  
   getPlanAndProject: function(cb, type, err, data) {
     var self = this, compose;
 
@@ -75,10 +79,13 @@ User.prototype = {
     }
 
     self[type] = data || null;
-    if(err)
+    self[type + '_d'] = true;
+    
+    if(err) {
       self.errors[type] = err;
+    }
 
-    if(exists(self.plan) && exists(self.project)) {
+    if(exists(self['plan_d']) && exists(self['project_d'])) {
       if(Object.keys(self.errors).length > 0)
         cb(self.errors, self.plan, self.project);
       else
@@ -92,12 +99,10 @@ function Request(raw) {
   if(data) {
     this.user = new User(data[0]);
   }
-
-  this.user = '';
 }
 
 Request.prototype = {
-  
+  user: ''
 };
 
 function Response(request) {
@@ -106,8 +111,8 @@ function Response(request) {
 
 Response.prototype = {
   reply: function(cb) {
-    var self = this;
-    var user = self.req.user;
+    var user = this.req.user;
+
     user.getPlanAndProject(function(errs, data) {
       var msg = '';
 
